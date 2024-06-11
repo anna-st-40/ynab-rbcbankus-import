@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timedelta
 import os
 import traceback
+from time import sleep
 
 def fetch_rbc_credentials(file_path):
     """Fetch RBC credentials from a JSON file."""
@@ -54,6 +55,7 @@ def get_transactions(playwright: Playwright, credentials_path, download_path):
         page.click('input[name="continue"]')
 
         # Handle "Sign-in Protection Alert" if needed
+        sleep(2)
         if page.query_selector('h1:has-text("Sign-in Protection Alert")'):
             page.screenshot(path="sign-in-protection.png")
             page.click('input[name="keep"]')
