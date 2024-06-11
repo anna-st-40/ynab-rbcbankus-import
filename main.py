@@ -3,7 +3,6 @@ import json
 from datetime import datetime, timedelta
 import os
 import traceback
-from time import sleep
 
 def fetch_rbc_credentials(file_path):
     """Fetch RBC credentials from a JSON file."""
@@ -47,14 +46,12 @@ def get_transactions(playwright: Playwright, credentials_path, download_path):
         page.fill("#K1", username)
         page.fill("#Q1", password)
         page.click('input[name="Sign In"]')
-        page.screenshot(path="1.png")
 
         # Answer security questions
         question = page.inner_html('label[for="USERID"]')
         answer = fetch_rbc_security_question(credentials_path, question)
         page.fill("#pvqAnswer", answer)
         page.click('input[name="continue"]')
-        page.screenshot(path="2.png")
 
         # Handle "Sign-in Protection Alert" if needed
         if page.query_selector('h1:has-text("Sign-in Protection Alert")'):
@@ -65,7 +62,6 @@ def get_transactions(playwright: Playwright, credentials_path, download_path):
         # Navigate to transaction download
         page.click(".account-card-name")
         page.click(".download-activity")
-        page.screenshot(path="3.png")
 
         # Get dates
         with open('last_imported.txt') as f:
@@ -76,7 +72,6 @@ def get_transactions(playwright: Playwright, credentials_path, download_path):
         page.fill("#formInputStartDate", last_imported_date)
         page.fill("#formInputEndDate", tomorrow_date)
         page.click("#formInputFormatTypeQuicken")
-        page.screenshot(path="4.png")
 
         # Click the button that triggers the download
         with page.expect_download() as download_info:
@@ -87,12 +82,11 @@ def get_transactions(playwright: Playwright, credentials_path, download_path):
         global download_filename
         download_filename = download.suggested_filename
         download.save_as(os.path.join(download_path, download_filename))
-        print(f"Downloaded file saved as: {os.path.join(download_path, download.suggested_filename)}")
 
     except:
         # Take a screenshot if an error occurs
         page.screenshot(path="rbc_error.png")
-        print("Something went wrong with the RBC part.")
+        print("Something went wrong with the RBC part. A screenshot has been saved at rbc_error.png")
         print(traceback.format_exc())
 
     finally:
@@ -113,20 +107,15 @@ def upload_to_ynab(playwright: Playwright, credentials_path, transactions_filena
         page.fill("#request_data_password", password)
         page.click('#login')
 
-        sleep(5)
-        page.screenshot(path="a.png")
-
         # Import file
         page.click(".accounts-toolbar-file-import-transactions")
         page.set_input_files('input[type="file"]', os.path.join('transaction_downloads', transactions_filename))
-        sleep(5)
-        page.screenshot(path="b.png")
         page.click('.modal-overlay.active button:text("Import")')
 
         # Check that import was successful
         if page.query_selector('div:text("Import Successful")'):
             page.click('.modal-overlay.active button:text("OK")')
-            page.screenshot(path="success.png")
+            print("Success! Transactions have been imported.")
         else:
             page.screenshot(path="error.png")
             print(f'Did not get "Import Successful" message. Please see screenshot error.png')
