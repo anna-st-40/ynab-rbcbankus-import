@@ -60,7 +60,7 @@ def get_transactions(playwright: Playwright, credentials_path, download_path):
         if page.query_selector('h1:has-text("Sign-in Protection Alert")'):
             page.screenshot(path="sign-in-protection.png")
             page.click('input[name="keep"]')
-            print("Sign-in Protection Alert has been triggered. A screenschot has been taken and saved at sign-in-protection.png")
+            print("Sign-in Protection Alert has been triggered. A screenshot has been taken and saved at sign-in-protection.png")
 
         # Navigate to transaction download
         page.click(".account-card-name")
