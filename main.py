@@ -131,8 +131,12 @@ def upload_to_ynab(playwright: Playwright, credentials_path, transactions_filena
     finally:
         browser.close()
 
-with sync_playwright() as playwright:
-    budget_id, account_id = fetch_ynab_ids("secret.json")
+def main(secret_path):
+    budget_id, account_id = fetch_ynab_ids(secret_path)
     download_path = os.path.join(os.getcwd(), 'transaction_downloads')
-    get_transactions(playwright, "secret.json", download_path)
-    upload_to_ynab(playwright, "secret.json", download_filename, budget_id, account_id)
+    get_transactions(playwright, secret_path, download_path)
+    upload_to_ynab(playwright, secret_path, download_filename, budget_id, account_id)
+
+with sync_playwright() as playwright:
+    main("secret_a.json")
+    main("secret_n.json")
