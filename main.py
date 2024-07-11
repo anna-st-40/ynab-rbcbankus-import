@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import os
 import traceback
 from time import sleep
+import sys
 
 def fetch_rbc_credentials(file_path):
     """Fetch RBC credentials from a JSON file."""
@@ -138,5 +139,5 @@ def main(secret_path):
     upload_to_ynab(playwright, secret_path, download_filename, budget_id, account_id)
 
 with sync_playwright() as playwright:
-    main("secret_a.json")
-    main("secret_n.json")
+    for i in range(1, len(sys.argv)):
+        main(sys.argv[i])

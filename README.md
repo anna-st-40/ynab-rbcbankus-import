@@ -54,10 +54,16 @@ This Python script automatically pushes transactions from your RBC Bank (U.S) ac
 
 ### Usage
 
-Run the main script to import transactions:
+Run the main script to import transactions, specifying the credentials file name:
 
 ```bash
-python main.py
+python main.py secret.json
+```
+
+**Note:** The script can take multiple JSON files to process several accounts at once. For example:
+
+```bash
+python main.py secret1.json secret2.json
 ```
 
 ## Files
